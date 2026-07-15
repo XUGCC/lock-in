@@ -36,8 +36,6 @@ const songCover = document.querySelector("#songCover");
 const songPreviewTitle = document.querySelector("#songPreviewTitle");
 const songPreviewArtist = document.querySelector("#songPreviewArtist");
 const songLookupStatus = document.querySelector("#songLookupStatus");
-const heroAlbumStage = document.querySelector("#heroAlbumStage");
-const heroAlbumCover = document.querySelector("#heroAlbumCover");
 const form = document.querySelector("#practiceForm");
 const skillPicker = document.querySelector("#skillPicker");
 const energyPicker = document.querySelector("#energyPicker");
@@ -496,14 +494,6 @@ function renderEnergyPicker() {
   }).join("");
 }
 
-function renderHeroSong() {
-  const song = dailySongFor(localDate());
-  heroAlbumStage.classList.toggle("has-song", Boolean(song));
-  delete heroAlbumCover.dataset.fallbackApplied;
-  heroAlbumCover.src = song?.coverUrl || DEFAULT_ALBUM_COVER;
-  heroAlbumStage.title = song ? `${song.title} · ${song.artist}` : "";
-}
-
 function songCardMarkup(song, date, variant) {
   if (!song) return "";
   const isLive = date === localDate();
@@ -713,7 +703,6 @@ function renderHistory() {
 }
 
 function renderAll({ animateCalendar = false, strong = false } = {}) {
-  renderHeroSong();
   renderStats();
   renderCalendar({ animateStickers: animateCalendar, strong });
   renderCalendarDetail();
@@ -806,7 +795,7 @@ function refreshSongMotions() {
 
   songUiContext = window.gsap.context(() => {
     const spinningAlbums = [
-      ...document.querySelectorAll("#heroAlbumStage.has-song .hero-vinyl"),
+      ...document.querySelectorAll("#heroAlbumStage .hero-vinyl"),
       ...document.querySelectorAll('.song-preview[data-state="ready"] .song-album'),
       ...document.querySelectorAll(".day-song-card.live-song .song-album"),
     ];
@@ -822,7 +811,7 @@ function refreshSongMotions() {
     });
 
     const noteStages = [
-      ...document.querySelectorAll("#heroAlbumStage.has-song"),
+      ...document.querySelectorAll("#heroAlbumStage"),
       ...document.querySelectorAll('.song-preview[data-state="ready"] .album-motion'),
       ...document.querySelectorAll(".day-song-card.live-song .album-motion"),
     ];
@@ -1237,7 +1226,7 @@ cancelEditButton.addEventListener("click", () => resetFormState());
 document.addEventListener("error", (event) => {
   const image = event.target;
   if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied === "true") return;
-  if (image.matches("[data-album-cover], #songCover, #heroAlbumCover")) {
+  if (image.matches("[data-album-cover], #songCover")) {
     image.dataset.fallbackApplied = "true";
     image.src = DEFAULT_ALBUM_COVER;
   }

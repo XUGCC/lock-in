@@ -1,9 +1,10 @@
-const CACHE_NAME = "lock-in-pwa-v15";
+const CACHE_NAME = "lock-in-pwa-v16";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=15",
-  "./app.js?v=15",
+  "./styles.css?v=16",
+  "./app.js?v=16",
+  "./fonts/Anton-Regular.ttf",
   "./vendor/gsap.min.js",
   "./vendor/ScrollTrigger.min.js",
   "./manifest.webmanifest",
