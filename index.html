@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#171714" />
+    <meta name="description" content="LOCK IN：手机里的 Locking 练习日历。" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./lock-in-icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./lock-in-icon.png" />
+    <link rel="stylesheet" href="./styles.css?v=15" />
+    <title>LOCK IN｜Locking 练习日历</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header" id="top">
+        <a class="brand-lockup" href="#top" aria-label="回到顶部">
+          <span class="brand-mark" aria-hidden="true">L!</span>
+          <span class="brand-word">LOCK IN</span>
+        </a>
+        <div class="header-actions">
+          <a class="icon-button ghost" href="#calendar" aria-label="打开练习日历" title="练习日历">
+            <span aria-hidden="true">▦</span>
+          </a>
+          <button class="icon-button install-button" id="installButton" type="button" aria-label="添加到手机桌面" title="添加到手机桌面" aria-haspopup="dialog">
+            <span aria-hidden="true">⇩</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero-dashboard" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">LOCKING PRACTICE</p>
+          <h1 id="hero-title">LOCK<br /><em>IN.</em></h1>
+          <div class="streak-chip" title="连续练习天数">
+            <span aria-hidden="true">⚡</span>
+            <strong id="streakStat">0</strong>
+            <small>STREAK</small>
+          </div>
+        </div>
+        <div class="hero-album-stage" id="heroAlbumStage" aria-hidden="true">
+          <span class="hero-music-notes"><i>♪</i><i>♫</i><i>♩</i></span>
+          <div class="hero-vinyl" id="heroVinyl">
+            <img id="heroAlbumCover" src="./default-album-cover.webp" alt="" />
+            <span id="heroVinylLabel">L!</span>
+          </div>
+        </div>
+        <div class="quick-stats" aria-label="本周练习概览">
+          <article title="本周练习分钟">
+            <span aria-hidden="true">◷</span>
+            <strong id="minutesStat">0</strong>
+            <small>MIN</small>
+          </article>
+          <article title="本周练习天数">
+            <span aria-hidden="true">●</span>
+            <strong id="daysStat">0</strong>
+            <small>DAYS</small>
+          </article>
+          <article title="本周平均状态">
+            <span aria-hidden="true">✦</span>
+            <strong id="energyStat">—</strong>
+            <small>FLOW</small>
+          </article>
+        </div>
+      </section>
+
+      <section class="calendar-section" id="calendar" aria-labelledby="calendar-title">
+        <div class="calendar-head">
+          <h2 id="calendar-title"><span aria-hidden="true">▦</span><span class="sr-only">练习日历</span></h2>
+          <strong id="calendarMonth"></strong>
+          <div class="calendar-nav" aria-label="切换月份">
+            <button id="prevMonth" type="button" aria-label="上个月" title="上个月">‹</button>
+            <button id="todayMonth" type="button" aria-label="回到本月" title="回到本月">●</button>
+            <button id="nextMonth" type="button" aria-label="下个月" title="下个月">›</button>
+          </div>
+        </div>
+        <div class="month-metrics" aria-label="当月练习概览">
+          <span title="练习次数"><b aria-hidden="true">◎</b><strong id="monthSessions">0</strong></span>
+          <span title="练习分钟"><b aria-hidden="true">◷</b><strong id="monthMinutes">0</strong></span>
+          <span title="记录今日最爱歌曲的天数"><b aria-hidden="true">♫</b><strong id="monthMusic">0</strong></span>
+        </div>
+        <div class="weekday-row" aria-hidden="true">
+          <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="月练习日历"></div>
+        <div class="calendar-detail" id="calendarDetail" aria-live="polite"></div>
+      </section>
+
+      <section class="record-section" id="log" aria-labelledby="record-title">
+        <div class="record-heading">
+          <h2 id="record-title"><span aria-hidden="true">＋</span><span class="sr-only">记录练习</span></h2>
+          <span id="editBadge" class="edit-badge" hidden>EDIT</span>
+        </div>
+
+        <form id="practiceForm" class="practice-form">
+          <div class="field-grid">
+            <label class="icon-field">
+              <span class="field-symbol" aria-hidden="true">▣</span>
+              <span class="sr-only">日期</span>
+              <input id="practiceDate" name="practiceDate" type="date" aria-label="日期" required />
+            </label>
+            <label class="icon-field duration-field">
+              <span class="field-symbol" aria-hidden="true">◷</span>
+              <span class="sr-only">时长（分钟）</span>
+              <input id="duration" name="duration" type="number" inputmode="numeric" min="5" max="480" value="60" aria-label="时长（分钟）" required />
+              <span class="input-unit" aria-hidden="true">MIN</span>
+            </label>
+          </div>
+
+          <fieldset>
+            <legend><span aria-hidden="true">⌁</span><span class="sr-only">练习动作</span></legend>
+            <div class="skill-picker" id="skillPicker" role="group" aria-label="选择练习动作"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend class="energy-legend">
+              <span aria-hidden="true">✦</span><span class="sr-only">身体状态</span>
+              <output id="energyLabel" aria-live="polite"></output>
+            </legend>
+            <div class="energy-picker" id="energyPicker" role="group" aria-label="选择身体状态"></div>
+          </fieldset>
+
+          <fieldset class="music-panel">
+            <legend><span aria-hidden="true">★</span><span class="sr-only">每天最喜欢的一首歌</span><small>1 / DAY</small></legend>
+            <div class="song-preview" id="songPreview" data-state="empty">
+              <div class="album-motion">
+                <span class="album-notes" aria-hidden="true"><i>♪</i><i>♫</i><i>♩</i></span>
+                <div class="song-album">
+                  <img id="songCover" src="./default-album-cover.webp" alt="" />
+                  <span aria-hidden="true">♫</span>
+                </div>
+              </div>
+              <div class="song-preview-copy">
+                <div class="marquee-line song-name"><span id="songPreviewTitle">今天最喜欢</span></div>
+                <div class="marquee-line song-artist"><span id="songPreviewArtist">等待一首歌</span></div>
+                <small id="songLookupStatus" aria-live="polite">↗ 粘贴网易云链接</small>
+              </div>
+            </div>
+            <label class="icon-field song-link-field">
+              <span class="field-symbol netease-dot" aria-hidden="true">↗</span>
+              <span class="sr-only">网易云音乐分享链接</span>
+              <input id="songUrl" name="songUrl" type="text" inputmode="url" maxlength="500" aria-label="网易云音乐分享链接" placeholder="粘贴网易云歌曲链接" autocomplete="off" />
+              <span id="songLinkState" class="song-link-state" aria-live="polite"></span>
+            </label>
+            <div class="song-manual-grid" id="songManualFields">
+              <label class="icon-field">
+                <span class="field-symbol" aria-hidden="true">♫</span>
+                <span class="sr-only">歌名</span>
+                <input id="songTitle" name="songTitle" type="text" maxlength="100" aria-label="歌名" placeholder="歌名" autocomplete="off" />
+              </label>
+              <label class="icon-field">
+                <span class="field-symbol" aria-hidden="true">●</span>
+                <span class="sr-only">歌手</span>
+                <input id="songArtist" name="songArtist" type="text" maxlength="120" aria-label="歌手" placeholder="歌手" autocomplete="off" />
+              </label>
+              <label class="icon-field bpm-field">
+                <span class="field-symbol" aria-hidden="true">♩</span>
+                <span class="sr-only">BPM</span>
+                <input id="songBpm" name="songBpm" type="number" inputmode="numeric" min="40" max="240" aria-label="BPM" placeholder="BPM" />
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="icon-field note-field">
+            <span class="field-symbol" aria-hidden="true">✎</span>
+            <span class="sr-only">练习笔记</span>
+            <textarea id="note" name="note" maxlength="300" aria-label="练习笔记" placeholder="今天抓住了什么？"></textarea>
+          </label>
+
+          <div class="form-actions">
+            <p id="formMessage" role="status" aria-live="polite"></p>
+            <button id="cancelEdit" class="action-button secondary" type="button" aria-label="取消编辑" title="取消编辑" hidden>
+              <span aria-hidden="true">×</span>
+            </button>
+            <button id="saveButton" class="action-button save-button" type="submit" aria-label="保存练习" title="保存练习">
+              <span aria-hidden="true">✓</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="history-section" id="history" aria-labelledby="history-title">
+        <div class="section-title-row">
+          <h2 id="history-title"><span aria-hidden="true">⌁</span><span class="sr-only">练习轨迹</span></h2>
+          <span class="section-kicker">SESSIONS</span>
+        </div>
+        <div class="filter-row" id="filterRow" role="group" aria-label="筛选练习记录"></div>
+        <div id="historyList" class="history-list" aria-live="polite"></div>
+      </section>
+
+      <section class="data-dock" aria-label="数据备份">
+        <span class="data-mark" aria-hidden="true">L!</span>
+        <button id="exportButton" type="button" aria-label="导出记录" title="导出记录">
+          <span aria-hidden="true">⇩</span><small>JSON</small>
+        </button>
+        <label class="import-button" aria-label="导入记录" title="导入记录">
+          <span aria-hidden="true">⇧</span><small>JSON</small>
+          <input id="importInput" type="file" accept="application/json" />
+        </label>
+      </section>
+
+      <nav class="bottom-nav" aria-label="页面快捷导航">
+        <a href="#calendar" aria-label="练习日历"><span aria-hidden="true">▦</span><small>日历</small></a>
+        <a class="nav-log" href="#log" aria-label="记录练习"><span aria-hidden="true">＋</span><small>记录</small></a>
+        <a href="#history" aria-label="练习轨迹"><span aria-hidden="true">⌁</span><small>轨迹</small></a>
+      </nav>
+    </main>
+
+    <dialog id="customSkillDialog" class="custom-skill-dialog">
+      <button id="closeCustomSkill" class="dialog-close" type="button" aria-label="关闭">×</button>
+      <div class="custom-icon-preview" aria-hidden="true">✣</div>
+      <h2>自定义元素</h2>
+      <form id="customSkillForm" class="custom-skill-form">
+        <label class="icon-field">
+          <span class="field-symbol custom-symbol" aria-hidden="true">✣</span>
+          <span class="sr-only">元素名称</span>
+          <input id="customSkillName" type="text" maxlength="24" aria-label="自定义元素名称" placeholder="例如：Leo Walk" autocomplete="off" required />
+        </label>
+        <button type="submit" aria-label="添加自定义元素" title="添加">✓</button>
+      </form>
+      <p id="customSkillMessage" class="custom-skill-message" role="status" aria-live="polite"></p>
+      <div id="customSkillList" class="custom-skill-list" aria-label="已添加的自定义元素"></div>
+      <small>所有自定义元素统一使用 ✣；移除元素不会删除历史练习。</small>
+    </dialog>
+
+    <dialog id="installHelpDialog" class="install-dialog">
+      <button id="closeInstallHelp" class="dialog-close" type="button" aria-label="关闭">×</button>
+      <div class="dialog-icon" aria-hidden="true">⇩</div>
+      <h2>放到桌面</h2>
+      <div class="install-steps">
+        <p><b>Chrome</b><span>⋮ → 安装应用</span></p>
+        <p><b>小米浏览器</b><span>☰ → 添加到桌面</span></p>
+      </div>
+      <small>首次需手动确认一次，之后可离线进入。</small>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./vendor/gsap.min.js"></script>
+    <script src="./vendor/ScrollTrigger.min.js"></script>
+    <script src="./app.js?v=15"></script>
+  </body>
+</html>
