@@ -43,6 +43,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .icon-button { width: 44px; height: 44px; display: grid; place-items: center; border: 2px solid var(--paper); border-radius: 50%; color: var(--ink); background: var(--yellow); font-size: 22px; font-weight: 900; cursor: pointer; }
 .icon-button.ghost { color: var(--paper); background: transparent; }
 .install-button { box-shadow: 3px 3px 0 var(--red); }
+/* Native APK 环境：隐藏 PWA“添加到主屏幕”按钮 */
+.native-app .install-button { display: none !important; }
 
 .eyebrow { margin: 0; color: var(--yellow); font-size: 9px; letter-spacing: .18em; font-weight: 900; }
 .hero-dashboard { position: relative; min-height: 306px; padding: 34px 20px 96px; overflow: hidden; color: var(--paper); background: var(--blue); border-bottom: 3px solid var(--ink); }

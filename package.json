@@ -1,0 +1,19 @@
+{
+  "name": "lock-in",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LOCK IN — Locking 练习打卡 PWA，封装为 Android App",
+  "scripts": {
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npx cap run android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.9",
+    "typescript": "^5.9.3"
+  }
+}

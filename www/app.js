@@ -23,6 +23,21 @@ const ENERGY_LEVELS = [
 ];
 const ALL_FILTER = "__all__";
 
+// Native app 平台判断（Capacitor Android APK）。
+function isNativeApp() {
+  return Boolean(
+    window.Capacitor &&
+    window.Capacitor.isNativePlatform &&
+    window.Capacitor.isNativePlatform()
+  );
+}
+const NATIVE_APP = isNativeApp();
+
+// Native APK 环境：标记为原生应用，用于隐藏 PWA 安装入口等浏览器专属 UI。
+if (NATIVE_APP) {
+  document.documentElement.classList.add("native-app");
+}
+
 const dateInput = document.querySelector("#practiceDate");
 const durationInput = document.querySelector("#duration");
 const noteInput = document.querySelector("#note");
@@ -1364,10 +1379,13 @@ document.querySelector("#importInput").addEventListener("change", async (event) 
   }
 });
 
-window.addEventListener("beforeinstallprompt", (event) => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
-});
+// 浏览器 PWA 专属逻辑：APK 中用不到“添加到主屏幕”，Native 环境跳过。
+if (!NATIVE_APP) {
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+  });
+}
 
 installButton.addEventListener("click", async () => {
   if (!deferredInstallPrompt) {
@@ -1407,7 +1425,8 @@ window.addEventListener("appinstalled", () => {
   installButton.disabled = true;
 });
 
-if ("serviceWorker" in navigator) {
+// 浏览器版本继续注册 Service Worker；Native APK 已把资源打包进 App，跳过避免 WebView 旧缓存。
+if (!NATIVE_APP && "serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => undefined));
 }
 

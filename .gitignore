@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Capacitor generated config artifacts at root (platform copies live under android/ which has its own .gitignore)
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+
+# Signing — never commit keystores or passwords
+*.jks
+*.keystore
+key.properties
