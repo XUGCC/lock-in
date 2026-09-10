@@ -6,7 +6,8 @@
   "scripts": {
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
-    "android:run": "npx cap run android"
+    "android:run": "npx cap run android",
+    "android:release": "npx cap sync android && cd android && gradlew assembleRelease"
   },
   "dependencies": {
     "@capacitor/android": "^7.6.9",
