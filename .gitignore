@@ -10,6 +10,8 @@ android/.gradle/
 android/local.properties
 android/app/build/
 android/build/
+# Android Studio 本地 IDE 配置（每台机器不同，不纳入版本控制）
+android/.idea/
 
 # Signing — never commit keystores or passwords
 *.jks
