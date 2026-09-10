@@ -63,14 +63,43 @@
 
 ```text
 lock-in/
-├── index.html                 # 应用结构与可访问性标签
-├── styles.css                 # 移动端视觉系统与响应式布局
-├── app.js                     # 记录、统计、歌曲识别与交互逻辑
-├── sw.js                      # 离线缓存
-├── manifest.webmanifest       # PWA 安装信息
-├── fonts/                     # 本地 Anton 展示字体与许可证
-├── vendor/                    # 本地 GSAP 与 ScrollTrigger
-└── assets/readme/             # README 视觉素材与真实界面截图
+├── www/                      # PWA 主资源（Capacitor 的 webDir）
+│   ├── index.html
+│   ├── styles.css
+│   ├── app.js                # 业务逻辑 + 平台判断（isNativeApp）
+│   ├── sw.js                  # 离线缓存（仅浏览器 PWA 注册）
+│   ├── manifest.webmanifest
+│   ├── fonts/  vendor/  assets/
+├── android/                   # Capacitor Android 原生工程
+├── capacitor.config.ts        # Capacitor 配置（appId com.xugcc.lockin）
+├── package.json               # Capacitor 依赖与 npm 脚本
+└── README.md
 ```
 
 项目使用原生 HTML、CSS 和 JavaScript，无需数据库、运行时或包管理器。
+
+## Android APK 构建
+
+第一阶段已将现有 PWA 封装为 Capacitor Android 应用；在 APK 环境中会自动屏蔽 PWA“添加到主屏幕”按钮、`beforeinstallprompt`/`appinstalled` 事件与 Service Worker（避免 WebView 旧缓存）。
+
+```bash
+# 首次
+npm install
+npx cap sync android
+
+# 修改 www/ 后同步到 android 工程
+npx cap sync android
+
+# 命令行构建 Debug APK（无需打开 Android Studio）
+cd android
+gradlew.bat assembleDebug
+# 产物：android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+要求：
+
+- JDK 17 及以上（Capacitor 7 Android 库按 Java 21 编译，推荐 JDK 21）
+- Android SDK（minSdk 23 / targetSdk 35 / build-tools），通过 `ANDROID_HOME` 或 `android/local.properties` 指定
+- 也可用 Android Studio 打开 `android/` 目录执行 Run（`npm run android:open`）
+
+> 注意：`android/app/build/`、`node_modules/`、签名密钥（`*.jks`/`key.properties`）和 `android/app/src/main/assets/public`（`cap sync` 生成）均已加入 `.gitignore`，不纳入版本控制。
