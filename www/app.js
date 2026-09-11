@@ -23,21 +23,6 @@ const ENERGY_LEVELS = [
 ];
 const ALL_FILTER = "__all__";
 
-// Native app 平台判断（Capacitor Android APK）。
-function isNativeApp() {
-  return Boolean(
-    window.Capacitor &&
-    window.Capacitor.isNativePlatform &&
-    window.Capacitor.isNativePlatform()
-  );
-}
-const NATIVE_APP = isNativeApp();
-
-// Native APK 环境：标记为原生应用，用于隐藏 PWA 安装入口等浏览器专属 UI。
-if (NATIVE_APP) {
-  document.documentElement.classList.add("native-app");
-}
-
 const dateInput = document.querySelector("#practiceDate");
 const durationInput = document.querySelector("#duration");
 const noteInput = document.querySelector("#note");
@@ -63,8 +48,6 @@ const calendarDetail = document.querySelector("#calendarDetail");
 const editBadge = document.querySelector("#editBadge");
 const cancelEditButton = document.querySelector("#cancelEdit");
 const saveButton = document.querySelector("#saveButton");
-const installButton = document.querySelector("#installButton");
-const installDialog = document.querySelector("#installHelpDialog");
 const customSkillDialog = document.querySelector("#customSkillDialog");
 const customSkillForm = document.querySelector("#customSkillForm");
 const customSkillInput = document.querySelector("#customSkillName");
@@ -82,7 +65,6 @@ let selectedCalendarDate = localDate();
 let calendarCursor = monthStart(new Date());
 let editingId = null;
 let justStampedDate = null;
-let deferredInstallPrompt = null;
 let toastTimer = null;
 let todayLiveContext = null;
 let calendarDropTimeline = null;
@@ -1379,36 +1361,6 @@ document.querySelector("#importInput").addEventListener("change", async (event) 
   }
 });
 
-// 浏览器 PWA 专属逻辑：APK 中用不到“添加到主屏幕”，Native 环境跳过。
-if (!NATIVE_APP) {
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-  });
-}
-
-installButton.addEventListener("click", async () => {
-  if (!deferredInstallPrompt) {
-    installDialog.showModal();
-    if (motionEnabled()) {
-      window.gsap.fromTo(installDialog, { y: 40, scale: 0.9, autoAlpha: 0 }, {
-        y: 0,
-        scale: 1,
-        autoAlpha: 1,
-        duration: 0.5,
-        ease: "back.out(1.7)",
-        clearProps: "transform,opacity,visibility",
-      });
-    }
-    return;
-  }
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-});
-
-document.querySelector("#closeInstallHelp").addEventListener("click", () => installDialog.close());
-
 document.querySelector(".bottom-nav").addEventListener("click", (event) => {
   const link = event.target.closest("a");
   if (link) animatePress(link);
@@ -1419,15 +1371,123 @@ document.querySelector(".data-dock").addEventListener("click", (event) => {
   if (control) animatePress(control);
 });
 
-window.addEventListener("appinstalled", () => {
-  deferredInstallPrompt = null;
-  installButton.innerHTML = '<span aria-hidden="true">✓</span>';
-  installButton.disabled = true;
-});
+/* ===== 相册（照片画廊）===== */
+const PHOTOS_KEY = "lock-in-photos-v1";
+const PHOTOS_DIR = "photos";
 
-// 浏览器版本继续注册 Service Worker；Native APK 已把资源打包进 App，跳过避免 WebView 旧缓存。
-if (!NATIVE_APP && "serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => undefined));
+const _cap = window.Capacitor;
+const cameraPlugin = _cap.Plugins.Camera;
+const filesystemPlugin = _cap.Plugins.Filesystem;
+const mediaStoreSaver = _cap.Plugins.MediaStoreSaver;
+
+const photoGridEl = document.querySelector("#galleryGrid");
+const photoEmptyEl = document.querySelector("#galleryEmpty");
+const photoPreviewDialogEl = document.querySelector("#photoPreviewDialog");
+const photoPreviewImgEl = document.querySelector("#photoPreviewImg");
+
+let photos = loadPhotos();
+let previewingPhoto = null;
+
+function loadPhotos() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PHOTOS_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed.filter((p) => p && typeof p.path === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePhotos() {
+  localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
+}
+
+function photoSrc(record) {
+  return filesystemPlugin.getUri({ path: record.path, directory: "DATA" })
+    .then((res) => _cap.convertFileSrc(res.uri))
+    .catch(() => "");
+}
+
+function renderPhotoGrid() {
+  photoEmptyEl.hidden = photos.length > 0;
+  photoGridEl.innerHTML = "";
+  const sorted = [...photos].sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+  sorted.forEach((record) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "photo-card";
+    card.setAttribute("aria-label", "查看照片");
+    const img = document.createElement("img");
+    img.alt = "照片";
+    img.loading = "lazy";
+    photoSrc(record).then((uri) => { if (img.isConnected) img.src = uri; }).catch(() => undefined);
+    card.appendChild(img);
+    card.addEventListener("click", () => openPhotoPreview(record));
+    photoGridEl.appendChild(card);
+  });
+}
+
+function openPhotoPreview(record) {
+  previewingPhoto = record;
+  photoPreviewImgEl.removeAttribute("src");
+  photoSrc(record).then((uri) => { photoPreviewImgEl.src = uri; }).catch(() => undefined);
+  photoPreviewDialogEl.showModal();
+}
+
+async function ingestPhoto(source) {
+  try {
+    const photo = await cameraPlugin.getPhoto({
+      source: source, // "camera" | "photos"
+      resultType: "base64",
+      quality: 88,
+      correctOrientation: true,
+      width: 1600,
+      saveToGallery: false,
+    });
+    if (!photo || !photo.base64) return;
+    const name = `img_${Date.now()}.jpg`;
+    const path = `${PHOTOS_DIR}/${name}`;
+    await filesystemPlugin.writeFile({ path, data: photo.base64, directory: "DATA", recursive: true });
+    const record = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), path, createdAt: new Date().toISOString() };
+    photos.unshift(record);
+    savePhotos();
+    renderPhotoGrid();
+    showToast("✓ 已加入相册");
+  } catch (err) {
+    const msg = err && (err.message || String(err));
+    if (/cancel|abort|dismissed|user/i.test(msg || "")) return;
+    showToast("! 操作失败");
+  }
+}
+
+async function savePhotoToGallery() {
+  if (!previewingPhoto || !mediaStoreSaver) { showToast("! 暂不支持"); return; }
+  try {
+    const file = await filesystemPlugin.readFile({ path: previewingPhoto.path, directory: "DATA" });
+    const name = previewingPhoto.path.split("/").pop();
+    await mediaStoreSaver.saveImage({ data: file.data || "data:image/jpeg;base64,", mimeType: "image/jpeg", fileName: name });
+    showToast("✓ 已存到系统相册");
+  } catch {
+    showToast("! 保存失败");
+  }
+}
+
+async function deletePhoto() {
+  if (!previewingPhoto) return;
+  try { await filesystemPlugin.deleteFile({ path: previewingPhoto.path, directory: "DATA" }); } catch { /* 已删 */ }
+  photos = photos.filter((p) => p.id !== previewingPhoto.id);
+  savePhotos();
+  previewingPhoto = null;
+  photoPreviewDialogEl.close();
+  renderPhotoGrid();
+}
+
+function bindGalleryControls() {
+  document.querySelector("#galleryCamera").addEventListener("click", () => ingestPhoto("camera"));
+  document.querySelector("#galleryPick").addEventListener("click", () => ingestPhoto("photos"));
+  document.querySelector("#closePhotoPreview").addEventListener("click", () => photoPreviewDialogEl.close());
+  document.querySelector("#photoSaveToGallery").addEventListener("click", savePhotoToGallery);
+  document.querySelector("#photoDelete").addEventListener("click", deletePhoto);
+  photoPreviewDialogEl.addEventListener("click", (e) => { if (e.target === photoPreviewDialogEl) photoPreviewDialogEl.close(); });
 }
 
 renderSkillPicker();
@@ -1435,3 +1495,6 @@ renderEnergyPicker();
 loadSongIntoForm(dateInput.value);
 renderAll({ animateCalendar: true });
 initMotionSystem();
+
+bindGalleryControls();
+renderPhotoGrid();

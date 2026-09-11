@@ -42,9 +42,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .icon-button { width: 44px; height: 44px; display: grid; place-items: center; border: 2px solid var(--paper); border-radius: 50%; color: var(--ink); background: var(--yellow); font-size: 22px; font-weight: 900; cursor: pointer; }
 .icon-button.ghost { color: var(--paper); background: transparent; }
-.install-button { box-shadow: 3px 3px 0 var(--red); }
-/* Native APK 环境：隐藏 PWA“添加到主屏幕”按钮 */
-.native-app .install-button { display: none !important; }
 
 .eyebrow { margin: 0; color: var(--yellow); font-size: 9px; letter-spacing: .18em; font-weight: 900; }
 .hero-dashboard { position: relative; min-height: 306px; padding: 34px 20px 96px; overflow: hidden; color: var(--paper); background: var(--blue); border-bottom: 3px solid var(--ink); }
@@ -247,21 +244,16 @@ textarea { min-height: 82px; resize: vertical; padding-top: 12px; font-size: 15p
 .import-button { background: var(--paper); }
 .data-dock small { font-size: 7px; letter-spacing: .12em; }
 .import-button input { position: absolute; width: 1px; height: 1px; margin: -1px; opacity: 0; clip-path: inset(50%); }
-.bottom-nav { position: sticky; z-index: 28; bottom: 0; display: grid; grid-template-columns: repeat(3, 1fr); min-height: calc(65px + env(safe-area-inset-bottom)); padding: 8px 18px calc(8px + env(safe-area-inset-bottom)); color: var(--paper); background: rgba(23,23,20,.97); border-top: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(12px); }
+.bottom-nav { position: sticky; z-index: 28; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); min-height: calc(65px + env(safe-area-inset-bottom)); padding: 8px 18px calc(8px + env(safe-area-inset-bottom)); color: var(--paper); background: rgba(23,23,20,.97); border-top: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(12px); }
 .bottom-nav a { min-height: 48px; display: grid; place-items: center; align-content: center; gap: 2px; color: #d0cabf; }
 .bottom-nav a > span { font: 900 23px "Lock Display", Impact, Haettenschweiler, sans-serif; }
 .bottom-nav small { font-size: 8px; font-weight: 900; }
 .bottom-nav .nav-log { width: 62px; min-height: 62px; justify-self: center; margin-top: -18px; border: 3px solid var(--ink); border-radius: 50%; color: var(--ink); background: var(--yellow); box-shadow: 3px 3px 0 var(--red); }
 
-.install-dialog, .custom-skill-dialog { width: min(calc(100% - 34px), 400px); border: 3px solid var(--ink); padding: 28px 20px 22px; color: var(--ink); background: var(--paper); box-shadow: 8px 8px 0 var(--red); }
-.install-dialog::backdrop, .custom-skill-dialog::backdrop { background: rgba(0,0,0,.68); }
+.custom-skill-dialog { width: min(calc(100% - 34px), 400px); border: 3px solid var(--ink); padding: 28px 20px 22px; color: var(--ink); background: var(--paper); box-shadow: 8px 8px 0 var(--red); }
+.custom-skill-dialog::backdrop { background: rgba(0,0,0,.68); }
 .dialog-close { position: absolute; right: 7px; top: 6px; width: 44px; height: 44px; border: 0; color: var(--ink); background: transparent; font-size: 25px; cursor: pointer; }
 .dialog-icon { width: 58px; height: 58px; display: grid; place-items: center; border: 3px solid var(--ink); border-radius: 50%; color: var(--ink); background: var(--yellow); font-size: 28px; font-weight: 900; box-shadow: 4px 4px 0 var(--red); }
-.install-dialog h2 { margin: 18px 0; font: 900 35px "Lock Display", Impact, Haettenschweiler, sans-serif; }
-.install-steps { display: grid; gap: 8px; }
-.install-steps p { display: flex; justify-content: space-between; gap: 12px; margin: 0; padding: 11px; border: 2px solid var(--ink); font-size: 11px; }
-.install-steps span { color: var(--muted); }
-.install-dialog > small { display: block; margin-top: 14px; color: var(--muted); font-size: 10px; line-height: 1.5; }
 .custom-icon-preview { width: 62px; height: 62px; display: grid; place-items: center; border: 3px solid var(--ink); border-radius: 50%; color: var(--paper); background: var(--blue); font: 900 29px Georgia, serif; box-shadow: 4px 4px 0 var(--yellow); transform: rotate(-8deg); }
 .custom-skill-dialog h2 { margin: 18px 0 14px; font: 900 33px "Lock Display", Impact, Haettenschweiler, sans-serif; }
 .custom-skill-form { display: grid; grid-template-columns: 1fr 50px; gap: 8px; }
@@ -305,9 +297,27 @@ textarea { min-height: 82px; resize: vertical; padding-top: 12px; font-size: 15p
   .song-manual-grid .bpm-field { grid-column: 1 / -1; }
 }
 
-@media (display-mode: standalone) {
-  .install-button { display: none; }
-}
+/* ===== 相册（照片画廊） ===== */
+.gallery-section { padding: 30px 16px 34px; background: var(--cream); scroll-margin-top: 76px; }
+.gallery-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.gallery-toolbar .action-button { display: flex; align-items: center; gap: 6px; width: auto; padding: 0 16px; }
+.gallery-toolbar .action-button small { font-size: 12px; font-weight: 900; }
+.gallery-toolbar .action-button.save-button { color: var(--ink); }
+.gallery-toolbar .secondary, .photo-preview-actions .secondary { border-color: var(--ink); color: var(--ink); background: var(--paper); }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.photo-card { position: relative; aspect-ratio: 1; margin: 0; padding: 0; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: var(--paper); cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+.photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-card:active { transform: translate(2px, 2px); box-shadow: none; }
+.gallery-empty { margin: 24px 0 8px; color: var(--muted); font-size: 13px; text-align: center; }
+
+.photo-preview-dialog { width: min(calc(100% - 24px), 420px); border: 3px solid var(--ink); padding: 0; color: var(--ink); background: var(--cream); box-shadow: 8px 8px 0 var(--red); }
+.photo-preview-dialog::backdrop { background: rgba(0, 0, 0, 0.78); }
+.photo-preview-stage { width: 100%; max-height: 62vh; overflow-y: auto; background: #0d0d0b; }
+.photo-preview-stage img { width: 100%; height: auto; display: block; object-fit: contain; }
+.photo-preview-actions { display: flex; justify-content: space-between; padding: 14px 14px 16px; }
+.photo-preview-actions .action-button { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 0 14px; }
+.photo-preview-actions .action-button small { font-size: 12px; font-weight: 900; }
+.photo-preview-actions .danger { border-color: var(--red); color: var(--paper); background: var(--red); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

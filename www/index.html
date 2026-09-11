@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#171714" />
     <meta name="description" content="LOCK IN：手机里的 Locking 练习日历。" />
-    <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./lock-in-icon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="./lock-in-icon.png" />
-    <link rel="stylesheet" href="./styles.css?v=16" />
+    <link rel="stylesheet" href="./styles.css?v=17" />
     <title>LOCK IN｜Locking 练习日历</title>
   </head>
   <body>
@@ -22,9 +20,6 @@
           <a class="icon-button ghost" href="#calendar" aria-label="打开练习日历" title="练习日历">
             <span aria-hidden="true">▦</span>
           </a>
-          <button class="icon-button install-button" id="installButton" type="button" aria-label="添加到手机桌面" title="添加到手机桌面" aria-haspopup="dialog">
-            <span aria-hidden="true">⇩</span>
-          </button>
         </div>
       </header>
 
@@ -187,6 +182,23 @@
         <div id="historyList" class="history-list" aria-live="polite"></div>
       </section>
 
+      <section class="gallery-section" id="gallery" aria-labelledby="gallery-title">
+        <div class="section-title-row">
+          <h2 id="gallery-title"><span aria-hidden="true">●</span><span class="sr-only">相册</span></h2>
+          <span class="section-kicker">PHOTOS</span>
+        </div>
+        <div class="gallery-toolbar">
+          <button id="galleryCamera" class="action-button save-button" type="button" title="拍照">
+            <span aria-hidden="true">◉</span><small>拍照</small>
+          </button>
+          <button id="galleryPick" class="action-button secondary" type="button" title="从相册选">
+            <span aria-hidden="true">＋</span><small>从相册选</small>
+          </button>
+        </div>
+        <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
+        <p id="galleryEmpty" class="gallery-empty" hidden>还没有照片，拍一张或从相册选一张吧。</p>
+      </section>
+
       <section class="data-dock" aria-label="数据备份">
         <span class="data-mark" aria-hidden="true">L!</span>
         <button id="exportButton" type="button" aria-label="导出记录" title="导出记录">
@@ -201,9 +213,23 @@
       <nav class="bottom-nav" aria-label="页面快捷导航">
         <a href="#calendar" aria-label="练习日历"><span aria-hidden="true">▦</span><small>日历</small></a>
         <a class="nav-log" href="#log" aria-label="记录练习"><span aria-hidden="true">＋</span><small>记录</small></a>
+        <a href="#gallery" aria-label="相册"><span aria-hidden="true">●</span><small>相册</small></a>
         <a href="#history" aria-label="练习轨迹"><span aria-hidden="true">⌁</span><small>轨迹</small></a>
       </nav>
     </main>
+
+    <dialog id="photoPreviewDialog" class="photo-preview-dialog">
+      <button id="closePhotoPreview" class="dialog-close" type="button" aria-label="关闭">×</button>
+      <div class="photo-preview-stage"><img id="photoPreviewImg" alt="照片预览" /></div>
+      <div class="photo-preview-actions">
+        <button id="photoSaveToGallery" class="action-button secondary" type="button">
+          <span aria-hidden="true">⇩</span><small>存到相册</small>
+        </button>
+        <button id="photoDelete" class="action-button danger" type="button">
+          <span aria-hidden="true">×</span><small>删除</small>
+        </button>
+      </div>
+    </dialog>
 
     <dialog id="customSkillDialog" class="custom-skill-dialog">
       <button id="closeCustomSkill" class="dialog-close" type="button" aria-label="关闭">×</button>
@@ -222,20 +248,9 @@
       <small>所有自定义元素统一使用 ✣；移除元素不会删除历史练习。</small>
     </dialog>
 
-    <dialog id="installHelpDialog" class="install-dialog">
-      <button id="closeInstallHelp" class="dialog-close" type="button" aria-label="关闭">×</button>
-      <div class="dialog-icon" aria-hidden="true">⇩</div>
-      <h2>放到桌面</h2>
-      <div class="install-steps">
-        <p><b>Chrome</b><span>⋮ → 安装应用</span></p>
-        <p><b>小米浏览器</b><span>☰ → 添加到桌面</span></p>
-      </div>
-      <small>首次需手动确认一次，之后可离线进入。</small>
-    </dialog>
-
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script src="./vendor/gsap.min.js"></script>
     <script src="./vendor/ScrollTrigger.min.js"></script>
-    <script src="./app.js?v=16"></script>
+    <script src="./app.js?v=17"></script>
   </body>
 </html>
