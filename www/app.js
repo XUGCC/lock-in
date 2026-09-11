@@ -1434,6 +1434,7 @@ function openPhotoPreview(record) {
 }
 
 async function ingestPhoto(source) {
+  console.log("[gallery] ingest start, source=", source);
   try {
     const photo = await cameraPlugin.getPhoto({
       source: source, // "camera" | "photos"
@@ -1443,17 +1444,24 @@ async function ingestPhoto(source) {
       width: 1600,
       saveToGallery: false,
     });
-    if (!photo || !photo.base64) return;
+    console.log("[gallery] getPhoto resolved, keys=", Object.keys(photo || {}));
+    // Capacitor 7 在 resultType "base64" 时返回 base64String（旧版本才是 base64），做兼容
+    const b64 = (photo && (photo.base64String || photo.base64 || photo.data)) || "";
+    if (!b64) { console.log("[gallery] abort: no base64"); return; }
     const name = `img_${Date.now()}.jpg`;
     const path = `${PHOTOS_DIR}/${name}`;
-    await filesystemPlugin.writeFile({ path, data: photo.base64, directory: "DATA", recursive: true });
+    console.log("[gallery] writing to", path, "b64len=", b64.length);
+    await filesystemPlugin.writeFile({ path, data: b64, directory: "DATA", recursive: true });
+    console.log("[gallery] writeFile OK");
     const record = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), path, createdAt: new Date().toISOString() };
     photos.unshift(record);
     savePhotos();
     renderPhotoGrid();
+    console.log("[gallery] rendered, count=", photos.length);
     showToast("✓ 已加入相册");
   } catch (err) {
     const msg = err && (err.message || String(err));
+    console.log("[gallery] CAPTURE ERROR:", msg);
     if (/cancel|abort|dismissed|user/i.test(msg || "")) return;
     showToast("! 操作失败");
   }
