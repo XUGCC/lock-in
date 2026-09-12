@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390" role="img" aria-labelledby="title desc">
   <title id="title">一次练习如何变成日历轨迹</title>
-  <desc id="desc">动作、时长、状态、音乐和笔记保存在浏览器本地，随后生成日历、统计、历史轨迹，并可导入导出 JSON。</desc>
+  <desc id="desc">动作、时长、状态、音乐和笔记保存在手机本地，随后生成日历、统计、历史轨迹，并可导入导出 JSON。</desc>
 
   <rect width="1200" height="390" rx="26" fill="#FFF9EB"/>
   <rect x="18" y="18" width="1164" height="354" fill="none" stroke="#171714" stroke-width="3"/>
@@ -32,7 +32,7 @@
       <circle cx="112" cy="94" r="31" fill="#F5CA45" stroke="#FFF9EB" stroke-width="4"/>
       <text x="112" y="92" text-anchor="middle" fill="#171714" font-family="Impact, 'Arial Black', sans-serif" font-size="20">LOCAL</text>
       <text x="112" y="110" text-anchor="middle" fill="#171714" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" font-weight="900">STORAGE</text>
-      <text x="112" y="220" text-anchor="middle" fill="#716C62" font-size="14" font-weight="800">当前浏览器</text>
+      <text x="112" y="220" text-anchor="middle" fill="#716C62" font-size="14" font-weight="800">App 本地存储</text>
     </g>
 
     <path d="M670 202 H740" fill="none" stroke="#171714" stroke-width="5"/>

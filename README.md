@@ -1,93 +1,67 @@
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="LOCK IN：把每一次 Locking 练习压进日历与黑胶唱片">
+  <img src="./assets/readme/hero.svg" width="100%" alt="LOCK IN：手机里的 Locking 练习日历，把每一次练习压进日历与黑胶唱片">
 </p>
 
 <p align="center">
-  <a href="https://xugcc.github.io/lock-in/"><strong>打开 LOCK IN</strong></a>
-  ·
-  <a href="#开始使用">开始使用</a>
-  ·
-  <a href="#数据与隐私">数据与隐私</a>
+  <a href="#-构建-apk"><img alt="Android 6.0+" src="https://img.shields.io/badge/Android-6.0%2B-30449E?logo=android&logoColor=FFF9EB"></a>
+  <img alt="Capacitor 7" src="https://img.shields.io/badge/Capacitor-7-171714?logo=capacitor&logoColor=FFF9EB">
+  <img alt="local first, offline ok" src="https://img.shields.io/badge/local_first-offline_ok-E5482F">
+  <img alt="no backend, no account" src="https://img.shields.io/badge/no_backend-no_account-716C62">
 </p>
 
-`LOCK IN` 是一个为 Locking 练习设计的本地优先 PWA。它把动作、时长、身体状态、笔记和每天最喜欢的一首歌，整理成可以持续回看的日历打卡与练习轨迹。
+**LOCK IN** 是为 Locking 舞者设计的练习打卡 Android 应用。每次练完，记下动作、时长、身体状态、笔记、今天最喜欢的一首歌和一张照片，App 会把它们压进一本可以持续回看的月历与练习轨迹。
 
-<p align="center">
-  <img src="./assets/readme/app-mobile.png" width="420" alt="LOCK IN 移动端首页，展示连续练习、本周统计、黑胶唱片和月练习日历">
-</p>
-
-## 不只是计时，更是留下练习的节奏
-
-- 用月历查看练习次数、分钟数、连续天数和当天记录。
-- 记录 Lock、Point、Wrist Roll、Scooby Doo、Stop & Go、Groove、Freestyle，或添加自己的练习元素。
-- 为每次练习保存时长、身体状态、笔记和 BPM。
-- 每天保留唯一一首“今日最爱”，可从网易云音乐分享链接识别歌曲信息。
-- 编辑、筛选或删除历史记录，并通过 JSON 导入和导出备份。
-- 所有应用资源都随仓库提供，首次加载后可离线继续使用。
+- **练习打卡**：Lock、Point、Wrist Roll、Scooby Doo、Stop & Go、Groove、Freestyle，也可以添加自己的练习元素；保存时长、身体状态（Body Energy）和笔记。
+- **月历与轨迹**：按月查看练习次数、分钟数、连续天数和音乐天数，点任意日期回看当天记录。
+- **今日最爱**：粘贴网易云音乐分享链接，自动识别歌名、歌手和封面；识别失败时可以手动填写。
+- **练习相册**：App 内拍照或从手机相册选图，网格浏览、全屏预览、另存到系统相册、删除。
+- **记录管理**：按动作筛选、编辑、删除历史记录。
+- **数据备份**：一键导出 / 导入 JSON。
 
 ## 一次练习，如何变成一枚日历唱片
 
 <p align="center">
-  <img src="./assets/readme/practice-flow.svg" width="100%" alt="LOCK IN 将练习输入保存到浏览器本地，并生成日历、统计、练习轨迹和 JSON 备份">
+  <img src="./assets/readme/practice-flow.svg" width="100%" alt="练习输入保存在手机本地，再生成月历、连续天数与练习轨迹，并可导出 JSON 备份">
 </p>
 
-应用没有后端和账号系统。练习记录、自定义元素与每日歌曲信息都保存在当前浏览器的 `localStorage` 中；日历、统计和练习轨迹由这些本地数据即时生成。
-
-## 开始使用
-
-1. 在手机浏览器打开 [LOCK IN](https://xugcc.github.io/lock-in/)。
-2. 点击右上角的下载按钮，或从浏览器菜单选择“安装应用 / 添加到主屏幕”。
-3. 选择日期、动作、状态和时长，保存你的第一次练习。
-
-小米浏览器通常可以从菜单中选择“添加到桌面”或“添加到主屏幕”。Chrome 会在满足安装条件时提供“安装应用”。
+App 没有后端和账号系统。练习记录、自定义元素、每日歌曲与相册元数据全部保存在手机本地；日历、统计和练习轨迹由这些数据即时生成，断网也不影响打卡。
 
 ## 数据与隐私
 
-- 练习记录只保存在当前浏览器，不会上传到本仓库或同步到其他设备。
-- 应用不会读取网易云账号、歌单或听歌历史。
-- 自动识别歌曲时，歌曲 ID 会发送到公开的 Meting 解析服务；网易云短链接会先通过 Unshorten.me 取得最终歌曲地址。
+- 练习记录只保存在 App 本地（`localStorage`），不会上传到任何服务器，也不会同步到其他设备。
+- 相册照片本体保存在 **App 私有目录**，卸载 App 会一并删除；「存到相册」会向系统相册另存一份副本，该副本不受卸载影响。
+- 自动识别歌曲时，歌曲 ID 会发送到公开的 Meting 解析服务；网易云短链接会先通过 Unshorten.me 取得最终歌曲地址。App 不读取网易云账号、歌单或听歌历史。
 - 外部识别服务不可用时，仍可手动填写歌名、歌手和 BPM，并使用本地默认封面。
-- 清除浏览器数据、换浏览器或换设备后，记录不会自动保留。请定期使用页面底部的 `⇩ JSON` 导出备份，再通过 `⇧ JSON` 恢复。
+- **卸载前请先导出 JSON 备份**（主页底部 `⇩ JSON`），恢复时使用 `⇧ JSON`。
 
-## 自托管到 GitHub Pages
+## 安装
 
-这是一个不需要构建步骤的静态项目。Fork 或复制仓库后：
+目前通过自行构建获得 APK（发布 Release 后可直接从 [GitHub Releases](https://github.com/XUGCC/lock-in/releases) 下载）：
 
-1. 打开仓库的 **Settings → Pages**。
-2. 在 **Build and deployment** 中选择 **Deploy from a branch**。
-3. 选择 `main` 分支和 `/ (root)`，保存后等待 Pages 发布。
-
-首次在线访问会由 Service Worker 缓存页面、字体、图标、GSAP 和默认唱片封面。之后即使断网，也可以继续打开和记录练习。
-
-## 项目结构
-
-```text
-lock-in/
-├── www/                      # PWA 主资源（Capacitor 的 webDir）
-│   ├── index.html
-│   ├── styles.css
-│   ├── app.js                # 业务逻辑 + 平台判断（isNativeApp）
-│   ├── sw.js                  # 离线缓存（仅浏览器 PWA 注册）
-│   ├── manifest.webmanifest
-│   ├── fonts/  vendor/  assets/
-├── android/                   # Capacitor Android 原生工程
-├── capacitor.config.ts        # Capacitor 配置（appId com.xugcc.lockin）
-├── package.json               # Capacitor 依赖与 npm 脚本
-└── README.md
+```bash
+git clone https://github.com/XUGCC/lock-in.git
+cd lock-in
+npm install
+npm run android:release
+# 产物：android/app/build/outputs/apk/release/app-release.apk
 ```
 
-项目使用原生 HTML、CSS 和 JavaScript，无需数据库、运行时或包管理器。
+把 APK 传到手机上安装；首次安装第三方 APK 需要允许「安装未知来源应用」。
 
-## Android APK 构建
+## ▦ 构建 APK
 
-第一阶段已将现有 PWA 封装为 Capacitor Android 应用；在 APK 环境中会自动屏蔽 PWA“添加到主屏幕”按钮、`beforeinstallprompt`/`appinstalled` 事件与 Service Worker（避免 WebView 旧缓存）。
+环境要求：
+
+- Node.js LTS
+- JDK 17 及以上（Capacitor 7 按 Java 21 编译，推荐 JDK 21）
+- Android SDK（minSdk 23 / targetSdk 35 / build-tools），通过 `ANDROID_HOME` 或 `android/local.properties` 指定
 
 ```bash
 # 首次
 npm install
 npx cap sync android
 
-# 修改 www/ 后同步到 android 工程
+# 修改 www/ 后同步到 Android 工程
 npx cap sync android
 
 # 命令行构建 Debug APK（无需打开 Android Studio）
@@ -96,10 +70,34 @@ gradlew.bat assembleDebug
 # 产物：android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
-要求：
+签名版走 `npm run android:release`，读取 `android/key.properties` 指向的 release keystore。`key.properties`、`*.jks` 与 `android/app/build/` 均已加入 `.gitignore`，签名材料不入库、需自行备份。
 
-- JDK 17 及以上（Capacitor 7 Android 库按 Java 21 编译，推荐 JDK 21）
-- Android SDK（minSdk 23 / targetSdk 35 / build-tools），通过 `ANDROID_HOME` 或 `android/local.properties` 指定
-- 也可用 Android Studio 打开 `android/` 目录执行 Run（`npm run android:open`）
+也可以用 Android Studio 打开 `android/` 目录直接 Run（`npm run android:open`）。
 
-> 注意：`android/app/build/`、`node_modules/`、签名密钥（`*.jks`/`key.properties`）和 `android/app/src/main/assets/public`（`cap sync` 生成）均已加入 `.gitignore`，不纳入版本控制。
+## ● 项目结构
+
+```text
+lock-in/
+├── assets/readme/          # README 视觉素材（hero / 流程图）
+├── www/                    # WebView 界面源码（Capacitor webDir）
+│   ├── index.html
+│   ├── styles.css
+│   ├── app.js              # 练习打卡 + 相册业务逻辑
+│   ├── lock-in-icon.png
+│   ├── default-album-cover.webp
+│   └── fonts/  vendor/
+├── android/                # Capacitor Android 原生工程
+│   └── app/src/main/java/com/xugcc/lockin/
+│       └── MediaStoreSaverPlugin.java   # 自定义插件：把照片写入系统相册
+├── capacitor.config.ts     # appId com.xugcc.lockin
+├── package.json            # Capacitor 依赖与 npm 脚本
+└── 纯AndroidApp改造蓝图.md  # 从 PWA 转向纯 Android App 的设计记录
+```
+
+前端是原生 HTML、CSS 和 JavaScript，没有框架和构建步骤；`www/` 整体作为 WebView 资源打包进 APK。
+
+---
+
+<p align="center">
+  <em>KEEP THE GROOVE. OWN THE DATA.</em>
+</p>
